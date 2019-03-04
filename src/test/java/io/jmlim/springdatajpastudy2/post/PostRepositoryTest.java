@@ -1,5 +1,6 @@
 package io.jmlim.springdatajpastudy2.post;
 
+import com.querydsl.core.types.Predicate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,8 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,6 +26,19 @@ public class PostRepositoryTest {
     @Autowired
     ApplicationContext applicationContext;
 
+    @Test
+    public void crud() {
+        Post post = new Post();
+        post.setTitle("hibernate");
+        postRepository.save(post.publish());
+
+        Predicate predicate = QPost.post.title.containsIgnoreCase("Hi");
+        Optional<Post> one = postRepository.findOne(predicate);
+        assertThat(one).isNotEmpty();
+    }
+
+
+
    /*  // AbstractAggregateRoot를 Post 가 상속받고 있으므로 이벤트를 직접 구현하지 않아도 됨.
     @Test
     public void event() {
@@ -34,7 +50,7 @@ public class PostRepositoryTest {
         applicationContext.publishEvent(event);
     }*/
 
-    @Test
+    /*@Test
     //@Rollback(false)
     public void crud() {
         Post post = new Post();
@@ -54,5 +70,5 @@ public class PostRepositoryTest {
         postRepository.delete(post);
         //데이터베이스에 싱크
         postRepository.flush();
-    }
+    }*/
 }
