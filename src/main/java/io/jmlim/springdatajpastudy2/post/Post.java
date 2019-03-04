@@ -1,10 +1,13 @@
 package io.jmlim.springdatajpastudy2.post;
 
+import org.springframework.data.domain.AbstractAggregateRoot;
+
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-public class Post {
+// AbstractAggregateRoot 이게 있으면 이벤트를 직접 구현하지 않아도 됨.
+public class Post extends AbstractAggregateRoot<Post> {
     @Id
     @GeneratedValue
     private Long id;
@@ -47,5 +50,11 @@ public class Post {
 
     public void setCreated(Date created) {
         this.created = created;
+    }
+
+
+    public Post publish() {
+        this.registerEvent(new PostPublishedEvent(this));
+        return this;
     }
 }
